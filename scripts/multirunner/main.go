@@ -60,7 +60,7 @@ func main() {
 
 	// dial flags
 	flag.StringVar(&flagDialAddress, "a", "127.0.0.1:9080", "address to dial to")
-	flag.IntVar(&flagDialScenario, "s", 0, "scenario to run")
+	flag.IntVar(&flagDialScenario, "s", 0, "scenario to run (1 or 2, by default all == 0)")
 	flag.DurationVar(&flagDialCooldownDuration, "w", DEFAULT_COOLDOWN_DURATION, "cooldown duration")
 	flag.DurationVar(&flagDialRunDuration, "d", DEFAULT_RUN_DURATION, "run duration")
 	flag.StringVar(&flagDialTransport, "t", "", "force a single specific transport instead of the predefined ones")
@@ -75,6 +75,9 @@ func main() {
 
 	case "dial":
 		dial()
+
+	default:
+		panic(fmt.Sprintf("unknown cmd: %s", cmd))
 	}
 }
 
@@ -91,6 +94,16 @@ type (
 )
 
 func dial() {
+	if flagDialScenario == 0 {
+		for i := range scenarios {
+			dialScenario(i)
+		}
+	} else {
+		dialScenario(flagDialScenario - 1)
+	}
+}
+
+func dialScenario(scenario int) {
 	conn, err := net.Dial("tcp", flagDialAddress)
 	if err != nil {
 		panic(err)
@@ -98,7 +111,7 @@ func dial() {
 	defer conn.Close()
 	buf := bufio.NewReader(conn)
 
-	testScenario := scenarios[flagDialScenario]
+	testScenario := scenarios[scenario]
 	transports := testScenario.Transports
 	if flagDialTransport != "" {
 		transports = []string{flagDialTransport}
@@ -106,8 +119,8 @@ func dial() {
 
 	for _, transport := range transports {
 		log.Printf("dialer: starting test for transport %s\n", transport)
-		clientMetricsFileName := fmt.Sprintf("s%d_%s_dial.csv", flagDialScenario+1, transport)
-		serverMetricsFileName := fmt.Sprintf("s%d_%s_listen.csv", flagDialScenario+1, transport)
+		clientMetricsFileName := fmt.Sprintf("s%d_%s_dial.csv", scenario+1, transport)
+		serverMetricsFileName := fmt.Sprintf("s%d_%s_listen.csv", scenario+1, transport)
 
 		request, err := json.Marshal(MessageStartListener{
 			Transport:       &transport,
