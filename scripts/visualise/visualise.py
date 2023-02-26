@@ -33,6 +33,13 @@ parser.add_argument(
     help="merge the given files in a single plot using the given column instead of generating plots for each file",
 )
 parser.add_argument(
+    "-l",
+    "--limit",
+    type=int,
+    default=0,
+    help="limit in seconds how long the plot should be",
+)
+parser.add_argument(
     "-o",
     "--output",
     type=str,
@@ -51,6 +58,11 @@ for filepath in args.filepath:
     if args.merge:
         start = df['time'].iloc[0]
         df['time'] = df['time'] - start
+        if args.limit > 0:
+            df = df[df['time'] <= args.limit*1000]
+    elif args.limit > 0:
+        start = df['time'].iloc[0]
+        df = df[df['time'] <= start+(args.limit*1000)]
 
     df['time'] = pd.to_datetime(df['time'], unit='ms')
     df['mem'] = df['mem'] / 1024.0 / 1024.0  # convert to MiB
