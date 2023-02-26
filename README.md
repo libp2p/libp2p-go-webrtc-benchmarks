@@ -34,7 +34,7 @@ With that in mind, we'll show you how to do all of the above.
 Run:
 
 ```
-go run ./benchmark/transports/webrtc -metrics csv listen
+go run ./main.go -metrics csv listen
 ```
 
 This should output a multiaddr which can be used by the client to connect.
@@ -47,14 +47,14 @@ The listener will continue to run until you kill it.
 The metrics can be summarized using the `report` command:
 
 ```
-go run ./benchmark/transports/webrtc report -s 16 metrics_listen_webrtc_c2_s8_e1_p0.csv
+go run ./main.go report -s 16 metrics_listen_webrtc_c2_s8_e1_p0.csv
 ```
 
 Which will print the result to the stdout of your terminal.
 Or you can visualize them using the bundled python script:
 
 ```
-./benchmark/transports/webrtc/scripts/visualise/visualise.py metrics_listen_webrtc_c2_s8_e1_p0.csv -s 16
+./scripts/visualise/visualise.py metrics_listen_webrtc_c2_s8_e1_p0.csv -s 16
 ```
 
 Which will open a new window with your graph in it.
@@ -63,11 +63,11 @@ More useful is however to save it to a file so we can share it. For the WebRTC r
 we might for example use the following command:
 
 ```
- ./benchmark/transports/webrtc/scripts/visualise/visualise.py \
+ ./scripts/visualise/visualise.py \
     -s 10000 \
-    -o ./benchmark/transports/webrtc/images/s1_webrtc.png \
-    ./benchmark/transports/webrtc/results/metrics_dial_webrtc_c10_s100_p0.csv \
-    ./benchmark/transports/webrtc/results/metrics_listen_webrtc_e1_p0.csv
+    -o ./images/s1_webrtc.png \
+    ./results/metrics_dial_webrtc_c10_s100_p0.csv \
+    ./results/metrics_listen_webrtc_e1_p0.csv
 ```
 
 ### 1.2. Client
@@ -75,7 +75,7 @@ we might for example use the following command:
 Run:
 
 ```
-go run ./benchmark/transports/webrtc -c 2 -s 8 dial <multiaddr>
+go run ./main.go -c 2 -s 8 dial <multiaddr>
 ```
 
 You can configure the number of streams and connections opened by the dialer using opt-in flags.
@@ -159,13 +159,13 @@ The instances are running each scenario variation one by one, as such there at a
 Server:
 
 ```
-go run ./benchmark/transports/webrtc/scripts/multirunner listen
+go run ./scripts/multirunner listen
 ```
 
 Client:
 
 ```
-go run ./benchmark/transports/webrtc/scripts/multirunner dial
+go run ./scripts/multirunner dial
 ```
 
 #### 2.1.1. Results
@@ -251,13 +251,13 @@ go run ./benchmark/transports/webrtc/scripts/multirunner dial
 Server:
 
 ```
-go run ./benchmark/transports/webrtc/scripts/multirunner listen
+go run ./scripts/multirunner listen
 ```
 
 Client:
 
 ```
-go run ./benchmark/transports/webrtc/scripts/multirunner -s 1 dial
+go run ./scripts/multirunner -s 1 dial
 ```
 
 #### 2.2.1. Results
