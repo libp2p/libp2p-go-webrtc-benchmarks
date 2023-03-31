@@ -223,7 +223,7 @@ func makeBasicHost(listenPort int, tpt string, insecure bool, randseed int64, op
 
 	switch tpt {
 	case "webrtc":
-		fmtStr = "/ip4/0.0.0.0/udp/%d/webrtc"
+		fmtStr = "/ip4/0.0.0.0/udp/%d/p2p-webrtc-direct"
 		transport = libp2p.Transport(wrtc.New)
 	case "quic":
 		fmtStr = "/ip4/0.0.0.0/udp/%d/quic"
